@@ -120,7 +120,7 @@ public class Main {
 		Makler m = new Makler();
 		
 		int id  = Integer.parseInt((FormUtil.readString("Enter agent ID")));
-	//	m.remove(id);
+		m.remove(id);
 		
 		System.out.println("Makler with ID "+ id +" was removed.");
 	}
