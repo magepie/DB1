@@ -22,6 +22,7 @@ public class Main {
 		final int MENU_ESTATE = 1;
 		final int MENU_CONTRACT = 2;
 		final int QUIT = 3;
+		final int MAKLER_MGMT_PW = 98765;
 		
 		//Creating Main menu
 		Menu mainMenu = new Menu("Main Menu");
@@ -36,7 +37,16 @@ public class Main {
 			
 			switch(response) {
 				case MENU_MAKLER:
-					showMaklerMenu();
+					int pw = Integer.parseInt((FormUtil.readString("Enter agent management password")));
+					if (pw == MAKLER_MGMT_PW)
+					{
+						showMaklerMenu();
+					}
+					else
+					{
+						System.out.println("Password incorrect");
+						break;
+					}
 					break;
 				case QUIT:
 					return;
@@ -69,6 +79,9 @@ public class Main {
 				case NEW_MAKLER:
 					newMakler();
 					break;
+				case DELETE_MAKLER:
+					deleteMakler();
+					break;
 				case BACK:
 					return;
 			}
@@ -88,5 +101,17 @@ public class Main {
 		m.save();
 		
 		System.out.println("Makler with ID "+m.getId()+" was created.");
+	}
+	
+	/**
+	 * Sets a new makler after the user inserts the correct data
+	 */
+	public static void deleteMakler() {
+		Makler m = new Makler();
+		
+		int id  = Integer.parseInt((FormUtil.readString("Enter agent ID")));
+		m.remove(id);
+		
+		System.out.println("Makler with ID "+ id +" was removed.");
 	}
 }

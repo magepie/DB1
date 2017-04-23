@@ -152,4 +152,23 @@ public class Makler {
 			e.printStackTrace();
 		}
 	}
+	
+	public void remove(int id)
+	{
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Create inquiry
+			String selectSQL = "DELETE FROM makler WHERE AGENTID = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
+
+			// Execute inquiry
+			pstmt.execute();
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
