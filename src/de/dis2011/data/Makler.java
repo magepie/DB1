@@ -113,7 +113,7 @@ public class Makler {
 			if (getId() == -1) {
 				// Here we pass another parameter
 				// so that later generated IDs can be delivered!
-				String insertSQL = "INSERT INTO makler(name, address, login, password) VALUES (?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO makler(AGENTNAME, ADDRESS, LOGIN, PASSWORD) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);

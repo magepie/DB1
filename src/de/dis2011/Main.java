@@ -14,16 +14,20 @@ public class Main {
 	}
 	
 	/**
-	 * Zeigt das Hauptmenü
+	 * Shows main menu
 	 */
 	public static void showMainMenu() {
 		//Main menu options
 		final int MENU_MAKLER = 0;
-		final int QUIT = 1;
+		final int MENU_ESTATE = 1;
+		final int MENU_CONTRACT = 2;
+		final int QUIT = 3;
 		
 		//Creating Main menu
 		Menu mainMenu = new Menu("Main Menu");
-		mainMenu.addEntry("Makler-Administration", MENU_MAKLER);
+		mainMenu.addEntry("Agent account management", MENU_MAKLER);
+		mainMenu.addEntry("Estate management", MENU_ESTATE);
+		mainMenu.addEntry("Contract management", MENU_CONTRACT);
 		mainMenu.addEntry("Exit", QUIT);
 		
 		//Processing Input
@@ -46,11 +50,15 @@ public class Main {
 	public static void showMaklerMenu() {
 		//Main menu options
 		final int NEW_MAKLER = 0;
-		final int BACK = 1;
+		final int EDIT_MAKLER = 1;
+		final int DELETE_MAKLER = 2;
+		final int BACK = 3;
 		
 		//Makler administration menu
-		Menu maklerMenu = new Menu("Makler-Administration");
-		maklerMenu.addEntry("New Makler", NEW_MAKLER);
+		Menu maklerMenu = new Menu("Agent account management");
+		maklerMenu.addEntry("New agent", NEW_MAKLER);
+		maklerMenu.addEntry("Edit agent", EDIT_MAKLER);
+		maklerMenu.addEntry("Remove agent", DELETE_MAKLER);
 		maklerMenu.addEntry("Return to the main menu", BACK);
 		
 		//Processing input
