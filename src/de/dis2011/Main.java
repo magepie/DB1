@@ -1,6 +1,7 @@
 package de.dis2011;
 
 import de.dis2011.data.Makler;
+import de.dis2011.data.Contract;
 
 /**
  * Main class
@@ -21,6 +22,7 @@ public class Main {
 		final int MENU_MAKLER = 0;
 		final int MENU_ESTATE = 1;
 		final int MENU_CONTRACT = 2;
+		final int MENU_OWNER = 6;
 		final int QUIT = 3;
 		final int MAKLER_MGMT_PW = 98765;
 		
@@ -29,6 +31,7 @@ public class Main {
 		mainMenu.addEntry("Agent account management", MENU_MAKLER);
 		mainMenu.addEntry("Estate management", MENU_ESTATE);
 		mainMenu.addEntry("Contract management", MENU_CONTRACT);
+		mainMenu.addEntry("Create new owner",MENU_OWNER);
 		mainMenu.addEntry("Exit", QUIT);
 		
 		//Processing Input
@@ -48,6 +51,13 @@ public class Main {
 						break;
 					}
 					break;
+				case MENU_OWNER:
+					newOwner();
+					break;
+				case MENU_CONTRACT:
+					showContractMenu();
+					break;
+
 				case QUIT:
 					return;
 			}
@@ -110,8 +120,78 @@ public class Main {
 		Makler m = new Makler();
 		
 		int id  = Integer.parseInt((FormUtil.readString("Enter agent ID")));
-		m.remove(id);
+	//	m.remove(id);
 		
 		System.out.println("Makler with ID "+ id +" was removed.");
 	}
+	public static void showContractMenu(){
+
+		final int NEW_RENT=0;
+		final int NEW_SALE=1;
+		final int BACK=2;
+
+
+		Menu contractMenu= new Menu("Create new Contract");
+		contractMenu.addEntry("New Rent Contract",NEW_RENT);
+		contractMenu.addEntry("New Sale Contract",NEW_SALE);
+		contractMenu.addEntry("Return to the main menu", BACK);
+
+
+		while(true){
+			int response = contractMenu.show();
+
+			switch(response){
+				case NEW_RENT:
+					newRentContract();
+					break;
+				case NEW_SALE:
+					newSaleContract();
+					break;
+				case BACK:
+					return;
+
+			}
+		}
+
+	}
+
+	public static void newOwner() {
+		Contract c = new Contract();
+
+		c.setFirstname(FormUtil.readString("First name"));
+		c.setLastName(FormUtil.readString("Last name"));
+		c.setAddress(FormUtil.readString("Address"));
+		c.createOwner();
+
+	}
+
+	public static void newRentContract(){
+
+		Contract c= new Contract();
+
+		c.setContractdate(FormUtil.readString("Date"));
+		c.setSettlemtnPlace(FormUtil.readString("Settlement Place"));
+		c.setApartmentid(FormUtil.readInt("Apartment id"));
+		c.setOwnerID(FormUtil.readInt("Owner ID"));
+		c.setDuration(FormUtil.readInt("Duration"));
+		c.setExtracosts(FormUtil.readInt("Extra costs"));
+		c.setStartDate(FormUtil.readString("Start Date"));
+		c.createContract();
+		c.createTenancy();
+
+	}
+
+	public static void newSaleContract(){
+		Contract c= new Contract();
+
+		c.setContractdate(FormUtil.readString("Date"));
+		c.setSettlemtnPlace(FormUtil.readString("Settlement Place"));
+		c.setHouseid(FormUtil.readInt("House ID"));
+		c.setOwnerID(FormUtil.readInt("Owner ID"));
+		c.setInstallments(FormUtil.readInt("Installments"));
+		c.setInterestrate(FormUtil.readInt("Interest Rate"));
+		c.createContract();
+		c.createPurchase();
+	}
+
 }
