@@ -11,7 +11,7 @@ import de.dis2011.data.DB2ConnectionManager;
 /**
  * Makler-Bean
  * 
- * Beispiel-Tabelle:
+ * Example table:
  * CREATE TABLE makler(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
  * name varchar(255),
  * address varchar(255),
@@ -66,21 +66,21 @@ public class Makler {
 	}
 	
 	/**
-	 * Lädt einen Makler aus der Datenbank
-	 * @param id ID des zu ladenden Maklers
-	 * @return Makler-Instanz
+	 * Loads a makler from the database
+	 * @param id ID of the makler to be loaded
+	 * @return makler instance
 	 */
 	public static Makler load(int id) {
 		try {
-			// Hole Verbindung
+			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
-			// Erzeuge Anfrage
+			// Create inquiry
 			String selectSQL = "SELECT * FROM makler WHERE id = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
-			// Führe Anfrage aus
+			// Execute inquiry
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Makler ts = new Makler();
@@ -101,31 +101,31 @@ public class Makler {
 	}
 	
 	/**
-	 * Speichert den Makler in der Datenbank. Ist noch keine ID vergeben
-	 * worden, wird die generierte Id von DB2 geholt und dem Model übergeben.
+	 * Stores the makler in the database. If no ID has yet been assigned
+	 * the generated Id is fetched from DB2 and passed to the model.
 	 */
 	public void save() {
-		// Hole Verbindung
+		//Get connection
 		Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 		try {
-			// FC<ge neues Element hinzu, wenn das Objekt noch keine ID hat.
+			// Fetch new element if the object does not yet have an ID.
 			if (getId() == -1) {
-				// Achtung, hier wird noch ein Parameter mitgegeben,
-				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
+				// Here we pass another parameter
+				// so that later generated IDs can be delivered!
 				String insertSQL = "INSERT INTO makler(name, address, login, password) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
 
-				// Setze Anfrageparameter und fC<hre Anfrage aus
+				// Set request parameters and fetch your request
 				pstmt.setString(1, getName());
 				pstmt.setString(2, getAddress());
 				pstmt.setString(3, getLogin());
 				pstmt.setString(4, getPassword());
 				pstmt.executeUpdate();
 
-				// Hole die Id des engefC<gten Datensatzes
+				// Get the Id of the record
 				ResultSet rs = pstmt.getGeneratedKeys();
 				if (rs.next()) {
 					setId(rs.getInt(1));
@@ -134,11 +134,11 @@ public class Makler {
 				rs.close();
 				pstmt.close();
 			} else {
-				// Falls schon eine ID vorhanden ist, mache ein Update...
+				// If an ID already exists, make an update
 				String updateSQL = "UPDATE makler SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
-				// Setze Anfrage Parameter
+				// Set request parameters
 				pstmt.setString(1, getName());
 				pstmt.setString(2, getAddress());
 				pstmt.setString(3, getLogin());

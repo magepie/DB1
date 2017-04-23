@@ -44,7 +44,7 @@ public class Main {
 	 * Shows the Makler administration
 	 */
 	public static void showMaklerMenu() {
-		//Menüoptionen
+		//Main menu options
 		final int NEW_MAKLER = 0;
 		final int BACK = 1;
 		
