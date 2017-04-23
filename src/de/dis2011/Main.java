@@ -3,11 +3,11 @@ package de.dis2011;
 import de.dis2011.data.Makler;
 
 /**
- * Hauptklasse
+ * Main class
  */
 public class Main {
 	/**
-	 * Startet die Anwendung
+	 * Starts the application
 	 */
 	public static void main(String[] args) {
 		showMainMenu();
@@ -17,16 +17,16 @@ public class Main {
 	 * Zeigt das Hauptmenü
 	 */
 	public static void showMainMenu() {
-		//Menüoptionen
+		//Main menu options
 		final int MENU_MAKLER = 0;
 		final int QUIT = 1;
 		
-		//Erzeuge Menü
-		Menu mainMenu = new Menu("Hauptmenü");
-		mainMenu.addEntry("Makler-Verwaltung", MENU_MAKLER);
-		mainMenu.addEntry("Beenden", QUIT);
+		//Creating Main menu
+		Menu mainMenu = new Menu("Main Menu");
+		mainMenu.addEntry("Makler-Administration", MENU_MAKLER);
+		mainMenu.addEntry("Exit", QUIT);
 		
-		//Verarbeite Eingabe
+		//Processing Input
 		while(true) {
 			int response = mainMenu.show();
 			
@@ -41,19 +41,19 @@ public class Main {
 	}
 	
 	/**
-	 * Zeigt die Maklerverwaltung
+	 * Shows the Makler administration
 	 */
 	public static void showMaklerMenu() {
 		//Menüoptionen
 		final int NEW_MAKLER = 0;
 		final int BACK = 1;
 		
-		//Maklerverwaltungsmenü
-		Menu maklerMenu = new Menu("Makler-Verwaltung");
-		maklerMenu.addEntry("Neuer Makler", NEW_MAKLER);
-		maklerMenu.addEntry("Zurück zum Hauptmenü", BACK);
+		//Makler administration menu
+		Menu maklerMenu = new Menu("Makler-Administration");
+		maklerMenu.addEntry("New Makler", NEW_MAKLER);
+		maklerMenu.addEntry("Return to the main menu", BACK);
 		
-		//Verarbeite Eingabe
+		//Processing input
 		while(true) {
 			int response = maklerMenu.show();
 			
@@ -68,18 +68,17 @@ public class Main {
 	}
 	
 	/**
-	 * Legt einen neuen Makler an, nachdem der Benutzer
-	 * die entprechenden Daten eingegeben hat.
+	 * Sets a new makler after the user inserts the correct data
 	 */
 	public static void newMakler() {
 		Makler m = new Makler();
 		
 		m.setName(FormUtil.readString("Name"));
-		m.setAddress(FormUtil.readString("Adresse"));
+		m.setAddress(FormUtil.readString("Address"));
 		m.setLogin(FormUtil.readString("Login"));
-		m.setPassword(FormUtil.readString("Passwort"));
+		m.setPassword(FormUtil.readString("Password"));
 		m.save();
 		
-		System.out.println("Makler mit der ID "+m.getId()+" wurde erzeugt.");
+		System.out.println("Makler with ID "+m.getId()+" was created.");
 	}
 }
