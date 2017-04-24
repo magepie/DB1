@@ -2,6 +2,7 @@ package de.dis2011;
 
 import de.dis2011.data.Makler;
 import de.dis2011.data.Contract;
+import de.dis2011.data.Apartment;
 
 /**
  * Main class
@@ -19,11 +20,11 @@ public class Main {
 	 */
 	public static void showMainMenu() {
 		//Main menu options
-		final int MENU_MAKLER = 0;
-		final int MENU_ESTATE = 1;
-		final int MENU_CONTRACT = 2;
-		final int MENU_OWNER = 6;
-		final int QUIT = 3;
+		final int MENU_MAKLER = 1;
+		final int MENU_ESTATE = 2;
+		final int MENU_CONTRACT = 3;
+		final int MENU_OWNER = 4;
+		final int QUIT = 5;
 		final int MAKLER_MGMT_PW = 98765;
 		
 		//Creating Main menu
@@ -53,6 +54,9 @@ public class Main {
 					break;
 				case MENU_OWNER:
 					newOwner();
+					break;
+				case MENU_ESTATE:
+					showEstateMenu();
 					break;
 				case MENU_CONTRACT:
 					showContractMenu();
@@ -94,6 +98,120 @@ public class Main {
 					break;
 				case EDIT_MAKLER:
 					editMakler();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	/**
+	 * Shows the estate administration
+	 */
+	public static void showEstateMenu() {
+		//Main menu options
+		final int APT = 0;
+		final int HOUSE = 1;
+		final int BACK = 2;
+		
+		//Estate administration menu
+		Menu estateMenu = new Menu("Agent account management");
+		estateMenu.addEntry("Manage an apartment", APT);
+		estateMenu.addEntry("Manage a house", HOUSE);
+		estateMenu.addEntry("Return to the main menu", BACK);
+		
+		//Processing input
+		while(true) {
+			int response = estateMenu.show();
+			
+			switch(response) {
+				case APT:
+					showAptMenu();
+					break;
+				case HOUSE:
+					showHouseMenu();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	/**
+	 * Shows the estate administration
+	 */
+	public static void showAptMenu() {
+		//Main menu options
+		final int ADD_APT = 0;
+		final int EDIT_APT = 1;
+		final int REMOVE_APT = 2;
+		final int BACK = 3;
+		
+		//Estate administration menu
+		Menu aptMenu = new Menu("Apartment account management");
+		aptMenu.addEntry("Add an apartment", ADD_APT);
+		aptMenu.addEntry("Edit an apartment", EDIT_APT);
+		aptMenu.addEntry("Remove an apartment", REMOVE_APT);
+		aptMenu.addEntry("Return to the main menu", BACK);
+		
+		//Processing input
+		while(true) {
+			int response = aptMenu.show();
+			Apartment apt = new Apartment();
+			switch(response) {
+				case ADD_APT:
+					apt.setAddress(FormUtil.readString("Address"));
+					apt.setArea(Float.parseFloat(FormUtil.readString("Area")));
+					apt.setFloor(Integer.parseInt(FormUtil.readString("Floor ")));
+					apt.setRoomNumber(Integer.parseInt(FormUtil.readString("Number of rooms ")));
+					apt.setBalconyIncl(Integer.parseInt(FormUtil.readString("Balcony? (1 if present) ")));
+					apt.setEbkIncl(Integer.parseInt(FormUtil.readString("Built in kitchen? (1 is included)")));
+					apt.setRent(Integer.parseInt(FormUtil.readString("Rent ")));
+					apt.save();
+					System.out.println("Apartment with ID "+ apt.getId() +" was added.");
+					break;
+				case EDIT_APT:
+					showHouseMenu();
+					break;
+				case REMOVE_APT:
+					apt.setId(Integer.parseInt(FormUtil.readString("Apartment ID ")));
+					apt.remove();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	/**
+	 * Shows the estate administration
+	 */
+	public static void showHouseMenu() {
+		//Main menu options
+		final int ADD_H = 0;
+		final int EDIT_H = 1;
+		final int REMOVE_H = 2;
+		final int BACK = 3;
+		
+		//Estate administration menu
+		Menu houseMenu = new Menu("House account management");
+		houseMenu.addEntry("Add a house", ADD_H);
+		houseMenu.addEntry("Edit a house", EDIT_H);
+		houseMenu.addEntry("Remove a house", REMOVE_H);
+		houseMenu.addEntry("Return to the main menu", BACK);
+		
+		//Processing input
+		while(true) {
+			int response = houseMenu.show();
+			
+			switch(response) {
+				case ADD_H:
+					showAptMenu();
+					break;
+				case EDIT_H:
+					showHouseMenu();
+					break;
+				case REMOVE_H:
 					break;
 				case BACK:
 					return;
