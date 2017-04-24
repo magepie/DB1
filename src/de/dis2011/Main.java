@@ -92,6 +92,9 @@ public class Main {
 				case DELETE_MAKLER:
 					deleteMakler();
 					break;
+				case EDIT_MAKLER:
+					editMakler();
+					break;
 				case BACK:
 					return;
 			}
@@ -114,7 +117,7 @@ public class Main {
 	}
 	
 	/**
-	 * Sets a new makler after the user inserts the correct data
+	 * Removes a makler after the user inserts the correct data
 	 */
 	public static void deleteMakler() {
 		Makler m = new Makler();
@@ -124,6 +127,7 @@ public class Main {
 		
 		System.out.println("Makler with ID "+ id +" was removed.");
 	}
+	
 	public static void showContractMenu(){
 
 		final int NEW_RENT=0;
@@ -193,5 +197,43 @@ public class Main {
 		c.createContract();
 		c.createPurchase();
 	}
-
+	
+	/**
+	 * Edits the makler data after the user inserts the correct data
+	 */
+	public static void editMakler() {
+		
+		final int CHG_NAME = 1;
+		final int CHG_ADDR = 2;
+		final int CHG_LOGIN = 3;
+		final int CHG_PW = 4;
+		
+		Makler m = new Makler();
+		
+		int id  = Integer.parseInt((FormUtil.readString("Enter agent ID")));
+		m.read(id);
+		System.out.println("ID: "+ id +"|| Name: " + m.getName() + "|| Address: " + m.getAddress() + "\r\n|| Login: " + m.getLogin() + "|| Password: " + m.getPassword());
+		System.out.println("Enter " + CHG_NAME +" to change name, " + CHG_ADDR +" to change address, " + CHG_LOGIN +" to change login, "  + CHG_PW +" to change password.");
+		int choice = Integer.parseInt((FormUtil.readString("")));
+		switch(choice)
+		{
+		case CHG_NAME:
+			m.setName(FormUtil.readString("Enter new name: "));
+			break;
+		case CHG_ADDR:
+			m.setAddress(FormUtil.readString("Enter new address: "));
+			break;
+		case CHG_LOGIN:
+			m.setLogin(FormUtil.readString("Enter new login: "));
+			break;
+		case CHG_PW:
+			m.setPassword(FormUtil.readString("Enter new password: "));
+			break;
+		default:
+			System.out.println("Failed to reconfigure.");
+			return;
+		}
+		m.save();
+		System.out.println("Makler with ID "+ id +" was reconfigured.");
+	}
 }

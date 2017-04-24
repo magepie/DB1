@@ -76,7 +76,7 @@ public class Makler {
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Create inquiry
-			String selectSQL = "SELECT * FROM makler WHERE id = ?";
+			String selectSQL = "SELECT * FROM makler WHERE AGENTID = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -85,7 +85,7 @@ public class Makler {
 			if (rs.next()) {
 				Makler ts = new Makler();
 				ts.setId(id);
-				ts.setName(rs.getString("name"));
+				ts.setName(rs.getString("agentname"));
 				ts.setAddress(rs.getString("address"));
 				ts.setLogin(rs.getString("login"));
 				ts.setPassword(rs.getString("password"));
@@ -135,7 +135,7 @@ public class Makler {
 				pstmt.close();
 			} else {
 				// If an ID already exists, make an update
-				String updateSQL = "UPDATE makler SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+				String updateSQL = "UPDATE makler SET agentname = ?, address = ?, login = ?, password = ? WHERE agentid = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Set request parameters
@@ -167,6 +167,34 @@ public class Makler {
 			// Execute inquiry
 			pstmt.execute();
 			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void read(int id)
+	{
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Create inquiry
+			String selectSQL = "SELECT * FROM makler WHERE AGENTID = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
+
+			// Execute inquiry
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				this.setId(id);
+				this.setName(rs.getString("AGENTNAME"));
+				this.setAddress(rs.getString("ADDRESS"));
+				this.setLogin(rs.getString("LOGIN"));
+				this.setPassword(rs.getString("PASSWORD"));
+
+				rs.close();
+				pstmt.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
