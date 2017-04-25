@@ -56,7 +56,18 @@ public class Main {
 					newOwner();
 					break;
 				case MENU_ESTATE:
-					showEstateMenu();
+					String login = FormUtil.readString("Login");
+					Makler m = new Makler();
+					m.setLogin(login);
+					String passw = new String(FormUtil.readString("Password"));
+					if (passw.equals(m.returnPassword()))
+					{
+						showEstateMenu();
+					}
+					else
+					{
+						System.out.println("Wrong password!");;
+					}
 					break;
 				case MENU_CONTRACT:
 					showContractMenu();
@@ -147,6 +158,16 @@ public class Main {
 		final int REMOVE_APT = 2;
 		final int BACK = 3;
 		
+		final int EDIT_ADDR = 1;
+		final int EDIT_AREA = 2;
+		final int EDIT_ROOM_NO = 4;
+		final int EDIT_RENT = 7;
+		final int EDIT_EBK = 6;
+		final int EDIT_BALC = 5;
+		final int EDIT_FLOOR = 3;
+		final int EDIT_AGENT = 8;
+		final int EDIT_BACK = 0;
+		
 		//Estate administration menu
 		Menu aptMenu = new Menu("Apartment account management");
 		aptMenu.addEntry("Add an apartment", ADD_APT);
@@ -171,7 +192,43 @@ public class Main {
 					System.out.println("Apartment with ID "+ apt.getId() +" was added.");
 					break;
 				case EDIT_APT:
-					showHouseMenu();
+					apt.setId(Integer.parseInt(FormUtil.readString("Apartment ID")));
+					apt.load();
+					System.out.println("ID: "+ apt.getId() +"|| Address[1]: " + apt.getAddress() + "|| Area[2]: " + apt.getArea() + "\r\n|| Floor[3]: " + apt.getFloor() + "|| Rooms[4]: " + apt.getRoomNumber()
+						+ "|| Balcony[5]: " + apt.getBalconyIncl() + "|| Built-in kitchen[6]: " +apt.getEbkIncl()+"\r\nRent[7]: "+apt.getRent()+"||Agent[8]:"+apt.getAgent() + "|| [0] to return.");
+					int param = Integer.parseInt(FormUtil.readString("Enter the number in brackets to change the parameter."));
+					switch (param)
+					{
+					case EDIT_ADDR:
+						apt.setAddress(FormUtil.readString("Address"));
+						break;
+					case EDIT_AREA:
+						apt.setArea(Float.parseFloat(FormUtil.readString("Area")));
+						break;
+					case EDIT_FLOOR:
+						apt.setFloor(Integer.parseInt(FormUtil.readString("Floor ")));
+						break;
+					case EDIT_ROOM_NO:
+						apt.setRoomNumber(Integer.parseInt(FormUtil.readString("Number of rooms ")));
+						break;
+					case EDIT_BALC:
+						apt.setBalconyIncl(Integer.parseInt(FormUtil.readString("Balcony? (1 if present) ")));
+						break;
+					case EDIT_EBK:
+						apt.setEbkIncl(Integer.parseInt(FormUtil.readString("Built in kitchen? (1 is included)")));
+						break;
+					case EDIT_RENT:
+						apt.setRent(Integer.parseInt(FormUtil.readString("Rent ")));
+						break;
+					case EDIT_AGENT:
+						apt.setAgent(FormUtil.readString("Agent name"));
+						break;
+					case EDIT_BACK:
+						return;
+					default:
+							return;
+					}
+					apt.save();
 					break;
 				case REMOVE_APT:
 					apt.setId(Integer.parseInt(FormUtil.readString("Apartment ID ")));

@@ -16,8 +16,17 @@ public class Apartment {
 	private int rent;
 	private int balconyIncl;
 	private int ebkIncl;
+	private String agent;
 	
 	
+	public String getAgent() {
+		return agent;
+	}
+
+	public void setAgent(String agent) {
+		this.agent = agent;
+	}
+
 	public int getBalconyIncl() {
 		return balconyIncl;
 	}
@@ -82,36 +91,56 @@ public class Apartment {
 		this.area = area;
 	}
 	
-	public static Apartment load(int id) {
+	public void load() {
 		try {
 			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
-
 			// Create inquiry
 			String selectSQL = "SELECT * FROM appartment WHERE id_a = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
-			pstmt.setInt(1, id);
-
+			pstmt.setInt(1, getId());
 			// Execute inquiry
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				Apartment apt = new Apartment();
-				apt.setId(id);
-				apt.setAddress(rs.getString("Address"));
-				apt.setArea(Float.parseFloat(rs.getString("Area")));
-				apt.setFloor(Integer.parseInt(rs.getString("Floor ")));
-				apt.setRoomNumber(Integer.parseInt(rs.getString("Number of rooms ")));
-				apt.setBalconyIncl(Integer.parseInt(rs.getString("Balcony? (1 if present) ")));
-				apt.setEbkIncl(Integer.parseInt(rs.getString("Built in kitchen? (1 is included)")));
-				apt.setRent(Integer.parseInt(rs.getString("Rent ")));
+			if (rs.next()) {		
+				setFloor(Integer.parseInt(rs.getString("floor")));
+				setRoomNumber(Integer.parseInt(rs.getString("rooms")));
+				setBalconyIncl(Integer.parseInt(rs.getString("balcony")));
+				setEbkIncl(Integer.parseInt(rs.getString("kitchen")));
+				setRent(Integer.parseInt(rs.getString("rent_t")));
 				rs.close();
 				pstmt.close();
-				return apt;
 			}
+			
+			selectSQL = "SELECT * FROM estate WHERE id = ?";
+			pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, getId());
+			// Execute inquiry
+			rs = pstmt.executeQuery();
+			if (rs.next()) 
+			{	
+				setAddress(rs.getString("estateaddress"));
+				setArea(Float.parseFloat(rs.getString("square_area")));
+				int agentid = rs.getInt("agentid");
+				rs.close();
+				pstmt.close();
+				
+
+				selectSQL = "SELECT * FROM makler WHERE agentid = ?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setInt(1, agentid);
+				// Execute inquiry
+				rs = pstmt.executeQuery();
+				if (rs.next()) 
+				{	
+					setAgent(rs.getString("agentname"));
+				}
+				rs.close();
+				pstmt.close();
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
 	}
 	
 	public void save()
@@ -155,6 +184,34 @@ public class Apartment {
 				rs.close();
 				pstmt.close();
 			} else {
+				
+				if (!getAgent().equals(""))
+				{
+					int agentid;
+					
+					String selectSQL = "SELECT * FROM makler WHERE agentname = ?";
+					PreparedStatement pstmt = con.prepareStatement(selectSQL);
+					pstmt.setString(1, getAgent());
+					// Execute inquiry
+					ResultSet rs = pstmt.executeQuery();
+					if (rs.next()) 
+					{	
+						agentid = Integer.parseInt(rs.getString("agentid"));
+						rs.close();
+						pstmt.close();
+						
+						String updateSQL = "UPDATE estate SET agentid = ? WHERE id = ?";
+						pstmt = con.prepareStatement(updateSQL);
+
+						// Set request parameters
+						pstmt.setInt(1, agentid);
+						pstmt.setInt(2, getId());
+						pstmt.executeUpdate();
+						pstmt.close();
+					}
+					
+				}
+				
 				// If an ID already exists, make an update
 				String updateSQL = "UPDATE estate SET estateaddress = ?, square_area = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
@@ -164,6 +221,7 @@ public class Apartment {
 				pstmt.setFloat(2, getArea());
 				pstmt.setInt(3, getId());
 				pstmt.executeUpdate();
+				pstmt.close();
 				
 				updateSQL = "UPDATE appartment SET floor = ?, rent_t = ?, rooms = ?, kitchen = ?, balcony = ? WHERE id_a = ?";
 				pstmt = con.prepareStatement(updateSQL);

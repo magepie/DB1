@@ -199,4 +199,32 @@ public class Makler {
 			e.printStackTrace();
 		}
 	}
+	
+	public String returnPassword()
+	{
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Create inquiry
+			String selectSQL = "SELECT * FROM makler WHERE login = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setString(1, getLogin());
+
+			// Execute inquiry
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				this.setId(rs.getInt("AGENTID"));
+				this.setPassword(rs.getString("PASSWORD"));
+
+				rs.close();
+				pstmt.close();
+				
+				return getPassword();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 }
