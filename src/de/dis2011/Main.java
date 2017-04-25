@@ -3,6 +3,7 @@ package de.dis2011;
 import de.dis2011.data.Makler;
 import de.dis2011.data.Contract;
 import de.dis2011.data.Apartment;
+import de.dis2011.data.House;
 
 /**
  * Main class
@@ -260,6 +261,14 @@ public class Main {
 		final int REMOVE_H = 2;
 		final int BACK = 3;
 		
+		final int EDIT_ADDR = 1;
+		final int EDIT_AREA = 2;
+		final int EDIT_FLOORS = 3;
+		final int EDIT_PRICE = 4;
+		final int EDIT_GARDEN = 5;
+		final int EDIT_AGENT = 6;
+		final int EDIT_BACK = 0;
+		
 		//Estate administration menu
 		Menu houseMenu = new Menu("House account management");
 		houseMenu.addEntry("Add a house", ADD_H);
@@ -270,15 +279,53 @@ public class Main {
 		//Processing input
 		while(true) {
 			int response = houseMenu.show();
-			
+			House h = new House();
 			switch(response) {
 				case ADD_H:
-					showAptMenu();
+					h.setAddress(FormUtil.readString("Address"));
+					h.setArea(Float.parseFloat(FormUtil.readString("Area")));
+					h.setFloors(Integer.parseInt(FormUtil.readString("Floors ")));
+					h.setPrice(Integer.parseInt(FormUtil.readString("Price ")));
+					h.setGardenIncl(Integer.parseInt(FormUtil.readString("Garden? (1 if present) ")));
+					h.save();
+					System.out.println("House with ID "+ h.getId() +" was added.");
 					break;
 				case EDIT_H:
-					showHouseMenu();
+					h.setId(Integer.parseInt(FormUtil.readString("House ID")));
+					h.load();
+					System.out.println("ID: "+ h.getId() +"|| Address[1]: " + h.getAddress() + "|| Area[2]: " + h.getArea() + "\r\n|| Floors[3]: " + h.getFloors() + "|| Price[4]: " + h.getPrice()
+						+ "|| Garden[5]: " + h.getGardenIncl() + "||Agent[6]:" + h.getAgent() + "|| [0] to return.");
+					int param = Integer.parseInt(FormUtil.readString("Enter the number in brackets to change the parameter."));
+					switch (param)
+					{
+					case EDIT_ADDR:
+						h.setAddress(FormUtil.readString("Address"));
+						break;
+					case EDIT_AREA:
+						h.setArea(Float.parseFloat(FormUtil.readString("Area")));
+						break;
+					case EDIT_FLOORS:
+						h.setFloors(Integer.parseInt(FormUtil.readString("Floors ")));
+						break;
+					case EDIT_PRICE:
+						h.setPrice(Integer.parseInt(FormUtil.readString("Priceh ")));
+						break;
+					case EDIT_GARDEN:
+						h.setGardenIncl(Integer.parseInt(FormUtil.readString("Garden? (1 if present) ")));
+						break;
+					case EDIT_AGENT:
+						h.setAgent(FormUtil.readString("Agent name"));
+						break;
+					case EDIT_BACK:
+						return;
+					default:
+							return;
+					}
+					h.save();
 					break;
 				case REMOVE_H:
+					h.setId(Integer.parseInt(FormUtil.readString("House ID ")));
+					h.remove();
 					break;
 				case BACK:
 					return;
