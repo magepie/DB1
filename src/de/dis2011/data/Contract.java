@@ -4,6 +4,7 @@ import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  * Created by nxirakia on 23.04.17.
@@ -310,7 +311,80 @@ public class Contract {
 
     public void showContracts(){
 
+        Connection con = DB2ConnectionManager.getInstance().getConnection();
 
+        try {
+
+            if (getContractType()==1){
+                String insertSQL = "select * from contract c where exists(select * from tenancycontract t where t.id=c.id)";
+
+                PreparedStatement pstmt = con.prepareStatement(insertSQL);
+
+                // Set request parameters and fetch your request
+                // Get the Id of the record
+                ArrayList <Contract> ar= new ArrayList<>();
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+
+                    Contract c= new Contract();
+
+                    c.setContractID(rs.getInt("id"));
+                    c.setSettlemtnPlace(rs.getString("settlementplace"));
+                    c.setContractdate(rs.getString("contractdate"));
+                    ar.add(c);
+
+                }
+
+                print(ar);
+
+                rs.close();
+                pstmt.close();
+
+
+
+            }
+            else if(getContractType()==2){
+
+                String insertSQL = "select * from contract c where exists(select * from purchasecontract p where p.id=c.id)";
+
+                PreparedStatement pstmt = con.prepareStatement(insertSQL);
+
+                // Set request parameters and fetch your request
+                // Get the Id of the record
+                ArrayList <Contract> ar= new ArrayList<>();
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+
+                    Contract c= new Contract();
+
+                    c.setContractID(rs.getInt("id"));
+                    c.setSettlemtnPlace(rs.getString("settlementplace"));
+                    c.setContractdate(rs.getString("contractdate"));
+                    ar.add(c);
+
+                }
+
+                print(ar);
+
+                rs.close();
+                pstmt.close();
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void print(ArrayList<Contract> contracts){
+
+        System.out.println("ID, Settlement Place, Contract Date");
+
+        for(Contract c:contracts){
+            System.out.println(c.getContractID()+"     "+c.getSettlemtnPlace()+"              "+c.getContractdate());
+        }
     }
 }
 

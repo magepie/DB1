@@ -70,9 +70,19 @@ public class Main {
 					}
 					break;
 				case MENU_CONTRACT:
-					showContractMenu();
+					String l = FormUtil.readString("Login");
+					Makler makler = new Makler();
+					makler.setLogin(l);
+					String pass = new String(FormUtil.readString("Password"));
+					if (pass.equals(makler.returnPassword()))
+					{
+						showContractMenu();
+					}
+					else
+					{
+						System.out.println("Wrong password!");;
+					}
 					break;
-
 				case QUIT:
 					return;
 			}
@@ -307,12 +317,14 @@ public class Main {
 
 		final int NEW_RENT=0;
 		final int NEW_SALE=1;
+		final int CONTRACT_OVERVIEW=3;
 		final int BACK=2;
 
 
 		Menu contractMenu= new Menu("Create new Contract");
 		contractMenu.addEntry("New Rent Contract",NEW_RENT);
 		contractMenu.addEntry("New Sale Contract",NEW_SALE);
+		contractMenu.addEntry("Display Contracts",CONTRACT_OVERVIEW);
 		contractMenu.addEntry("Return to the main menu", BACK);
 
 
@@ -326,6 +338,9 @@ public class Main {
 				case NEW_SALE:
 					newSaleContract();
 					break;
+				case CONTRACT_OVERVIEW:
+					System.out.println("Press '1' to view the Rent contracts and '2' for the tenancy contracts!");
+					displayContract();
 				case BACK:
 					return;
 
@@ -372,6 +387,12 @@ public class Main {
 		c.setInterestrate(FormUtil.readInt("Interest Rate"));
 
 		c.createContract();
+	}
+
+	public static void displayContract(){
+		Contract c= new Contract();
+		c.setContractType(FormUtil.readInt("Insert Contract type"));
+		c.showContracts();
 	}
 	
 	/**
