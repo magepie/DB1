@@ -352,12 +352,12 @@ public class Main {
 		c.setSettlemtnPlace(FormUtil.readString("Settlement Place"));
 		c.setApartmentid(FormUtil.readInt("Apartment id"));
 		c.setOwnerID(FormUtil.readInt("Owner ID"));
+		c.setContractType(1);
 		c.setDuration(FormUtil.readInt("Duration"));
 		c.setExtracosts(FormUtil.readInt("Extra costs"));
 		c.setStartDate(FormUtil.readString("Start Date"));
-		c.createContract();
-		c.createTenancy();
 
+		c.createContract();
 	}
 
 	public static void newSaleContract(){
@@ -367,10 +367,11 @@ public class Main {
 		c.setSettlemtnPlace(FormUtil.readString("Settlement Place"));
 		c.setHouseid(FormUtil.readInt("House ID"));
 		c.setOwnerID(FormUtil.readInt("Owner ID"));
+		c.setContractType(2);
 		c.setInstallments(FormUtil.readInt("Installments"));
 		c.setInterestrate(FormUtil.readInt("Interest Rate"));
+
 		c.createContract();
-		c.createPurchase();
 	}
 	
 	/**

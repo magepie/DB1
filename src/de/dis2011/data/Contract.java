@@ -19,7 +19,7 @@ public class Contract {
     private int contractid= -1;
     private String contractdate;
     private String settlemtnplace;
-    private String contractType;
+    private int contractType;
     private int installments;
     private double interestrate;
     private String startDate;
@@ -84,9 +84,9 @@ public class Contract {
 
     public void setSettlemtnPlace(String settlemtnplace) {this.settlemtnplace=settlemtnplace;}
 
-    public String getContractType(){return contractType;}
+    public int getContractType(){return contractType;}
 
-    public void setContractType(String contractType){this.contractType=contractType;}
+    public void setContractType(int contractType){this.contractType=contractType;}
 
     public int getInstallments(){return installments;}
 
@@ -169,8 +169,10 @@ public class Contract {
 
         try {
 
+            System.out.println(getContractID());
+
             // Fetch new element if the object does not yet have an ID.
-            if (getContractID() == -1) {
+
                 // Here we pass another parameter
                 // so that later generated IDs can be delivered!
                 String insertSQL = "INSERT INTO contract(contractdate, settlementplace) VALUES (?, ?)";
@@ -192,18 +194,13 @@ public class Contract {
 
                 rs.close();
                 pstmt.close();
-            } else {
-                // If an ID already exists, make an update
-                String updateSQL = "UPDATE contract SET contractdate = ?, settlementplace=? WHERE id = ?";
-                PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
-                // Set request parameters
-                pstmt.setString(1, getContractdate());
-                pstmt.setString(2, getSettlemtnPlace());
-                pstmt.setInt(3, getContractID());
-                pstmt.executeUpdate();
-                pstmt.close();
-            }
+                if (getContractType()==1)
+                        this.createTenancy();
+                else if (getContractType()==2)
+                        this.createPurchase();
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -212,23 +209,22 @@ public class Contract {
         Connection con = DB2ConnectionManager.getInstance().getConnection();
 
         try {
+            System.out.println(getContractID());
 
             // Fetch new element if the object does not yet have an ID.
-            if (getContractID() == -1) {
                 // Here we pass another parameter
                 // so that later generated IDs can be delivered!
-                String insertSQL = "INSERT INTO tenancycontract(strartdate, duration, extracharges) VALUES (?, ?,?); INSERT INTO apartmentrent(ownerid,apartmentid) VALUES (?,?); ";
+                String insertSQL = "INSERT INTO tenancycontract(id, startdate, duration, extracharges) VALUES (?, ?,?,?)";
 
                 PreparedStatement pstmt = con.prepareStatement(insertSQL,
                         Statement.RETURN_GENERATED_KEYS);
 
                 // Set request parameters and fetch your request
-                pstmt.setString(1, getStartDate());
-                pstmt.setInt(2,getDuration());
-                pstmt.setDouble(3,getExtracosts());
-                pstmt.setInt(4,getOwnerID());
-                pstmt.setInt(5,getApartmentid());
-                pstmt.executeUpdate();
+             pstmt.setInt(1, getContractID());
+             pstmt.setString(2, getStartDate());
+             pstmt.setInt(3,getDuration());
+             pstmt.setDouble(4,getExtracosts());
+             pstmt.executeUpdate();
 
                 // Get the Id of the record
                 ResultSet rs = pstmt.getGeneratedKeys();
@@ -238,22 +234,26 @@ public class Contract {
 
                 rs.close();
                 pstmt.close();
-            } else {
-                // If an ID already exists, make an update
-                String updateSQL = "UPDATE tenancycontract SET strartdate = ?, duration=? , extracharges=? WHERE id = ?; UPDATE apartmentrent SET ownerid=?, apartmentid=? WHERE contractid=?;";
-                PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
-                // Set request parameters
-                pstmt.setString(1, getStartDate());
-                pstmt.setInt(2,getDuration());
-                pstmt.setDouble(3,getExtracosts());
-                pstmt.setInt(4,getContractID());
-                pstmt.setInt(5,getOwnerID());
-                pstmt.setInt(6,getApartmentid());
-                pstmt.setInt(7,getContractID());
-                pstmt.executeUpdate();
-                pstmt.close();
-            }
+                String insertSQL2 = "INSERT INTO apartmentrent(contractid,ownerid,apartmentid) VALUES (?,?,?)";
+
+                PreparedStatement pstmt2 = con.prepareStatement(insertSQL2,
+                        Statement.RETURN_GENERATED_KEYS);
+
+                pstmt2.setInt(1,getContractID());
+                pstmt2.setInt(2,getOwnerID());
+                pstmt2.setInt(3,getApartmentid());
+                pstmt2.executeUpdate();
+
+                ResultSet rs2 = pstmt2.getGeneratedKeys();
+                if (rs2.next()) {
+                    setContractID(rs2.getInt(1));
+                }
+
+                rs2.close();
+                pstmt2.close();
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -264,19 +264,17 @@ public class Contract {
         try {
 
             // Fetch new element if the object does not yet have an ID.
-            if (getContractID() == -1) {
                 // Here we pass another parameter
                 // so that later generated IDs can be delivered!
-                String insertSQL = "INSERT INTO purchasecontract(numberofinstallments, interestrate) VALUES (?, ?); INSERT INTO SALES(owner_id, house_id) VALUES (?,?,?);";
+                String insertSQL = "INSERT INTO purchasecontract(id,numberofinstallments, interestrate) VALUES (?, ?,?)";
 
                 PreparedStatement pstmt = con.prepareStatement(insertSQL,
                         Statement.RETURN_GENERATED_KEYS);
 
                 // Set request parameters and fetch your request
-                pstmt.setInt(1, getInstallments());
-                pstmt.setDouble(2,getInterestrate());
-                pstmt.setInt(3,getOwnerID());
-                pstmt.setInt(4,getHouseid());
+                pstmt.setInt(1,getContractID());
+                pstmt.setInt(2, getInstallments());
+                pstmt.setDouble(3,getInterestrate());
                 pstmt.executeUpdate();
 
                 // Get the Id of the record
@@ -287,25 +285,32 @@ public class Contract {
 
                 rs.close();
                 pstmt.close();
-            } else {
-                // If an ID already exists, make an update
-                String updateSQL = "UPDATE purchasecontract SET numberofinstallments = ?, interestrate=? WHERE contract_id = ?; UPDATE sales SET owner_id=?, house_id=? WHERE contract_id=?;";
-                PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
-                // Set request parameters
-                pstmt.setInt(1, getInstallments());
-                pstmt.setDouble(2,getInterestrate());
-                pstmt.setInt(3,getContractID());
-                pstmt.setInt(4,getOwnerID());
-                pstmt.setInt(5,getHouseid());
-                pstmt.setInt(6,getContractID());
-                pstmt.executeUpdate();
-                pstmt.close();
+            String insertSQL2= "INSERT INTO SALES(contract_id,owner_id, house_id) VALUES (?,?,?)";
+            PreparedStatement pstmt2 = con.prepareStatement(insertSQL2,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt2.setInt(1,getContractID());
+            pstmt2.setInt(2,getOwnerID());
+            pstmt2.setInt(3,getHouseid());
+
+            pstmt2.executeUpdate();
+
+            ResultSet rs2 = pstmt2.getGeneratedKeys();
+            if (rs2.next()) {
+                setContractID(rs2.getInt(1));
             }
+
+            rs2.close();
+            pstmt2.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public void showContracts(){
+
+
+    }
 }
 
